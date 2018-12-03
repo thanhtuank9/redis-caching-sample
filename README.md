@@ -13,3 +13,7 @@
 1. Host: locahost
 1. Port: 6379
 1. Pass: empty is default
+
+
+#### 3. Change port or password if needed
+* Go to **C:\redis-latest\redis.windows.conf** and update new config: Ex: **Port** or **Password**
