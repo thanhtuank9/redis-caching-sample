@@ -1,0 +1,8 @@
+/packages
+/RedisCachingSample/obj/
+/RedisCachingSample/bin/
+/RedisCaching.Service/obj/
+/RedisCaching.Service/bin/
+/RedisCaching.Core/obj/
+/RedisCaching.Core/bin/
+/.vs/RedisCachingSample/v15
