@@ -25,15 +25,9 @@ namespace RedisCaching.Service.Services
         /// The way 1: with in caching
         /// </summary>
         /// <returns></returns>
-        public List<PropertyItemModel> GetCachingProperties()
+        public List<PropertyItemModel> GetCachingProperties1()
         {
-            var obj = base.GetCachingData<List<PropertyItemModel>>(RedisKeys.PropertyDataList);
-            if (obj == null)
-            {
-                obj = SamplePropertyData.GetProperties();
-            }
-
-            return obj;
+            return base.GetDataWithCaching(RedisKeys.PropertyDataList, SamplePropertyData.GetProperties);
         }
 
         /// <summary>
@@ -42,7 +36,20 @@ namespace RedisCaching.Service.Services
         /// <returns></returns>
         public List<PropertyItemModel> GetCachingProperties2()
         {
-            return base.GetDataWithCaching(RedisKeys.PropertyDataList, SamplePropertyData.GetProperties);
+            var obj = base.GetCachingData<List<PropertyItemModel>>(RedisKeys.PropertyDataList);
+            if (obj == null)
+            {
+                obj = SamplePropertyData.GetProperties();
+                base.SetDataToCache(RedisKeys.PropertyDataList,obj);
+            }
+
+            return obj;
         }
+
+        public void ClearCache()
+        {
+            base.RemoveCacheByKey(RedisKeys.PropertyDataList);
+        }
+        
     }
 }

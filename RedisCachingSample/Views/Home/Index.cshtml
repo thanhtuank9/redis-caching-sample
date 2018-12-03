@@ -6,28 +6,48 @@
 <div class="jumbotron">
     <h1>Total Properties: @Model.Count</h1>
     <h2>Total Milliseconds: @ViewBag.TotalMilliseconds</h2>
+    @if (ViewBag.IsCaching != null)
+    {
+        <div>
+            <button id="clearCache" class="btn btn-warning">Clear cache</button>
+        </div>
+    }
+
 </div>
 
 <div class="row">
     <div class="col-md-12">
         <table class="table table-bordered">
             <thead>
-            <tr>
-                <td>Id</td>
-                <td>Name</td>
-                <td>Address</td>
-            </tr>
+                <tr>
+                    <td>Id</td>
+                    <td>Name</td>
+                    <td>Address</td>
+                </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model)
                 {
-                <tr>
-                    <td>@item.Id</td>
-                    <td>@item.Name</td>
-                    <td>@item.Address</td>
-                </tr>
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Name</td>
+                        <td>@item.Address</td>
+                    </tr>
                 }
             </tbody>
         </table>
     </div>
 </div>
+
+@section scripts{
+    <script>
+        $("#clearCache").on('click',
+            function(){
+                $.get('/home/ClearCache',
+                    function(result){
+                        console.log(result);
+                        alert('Cleared Cache successfull');
+                    });
+            });
+    </script>
+}
