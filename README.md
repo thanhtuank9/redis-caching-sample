@@ -8,7 +8,7 @@
 ##### - Please check Redis in the Service to make sure it works, like [this image](http://i.imgur.com/v07MKdw.png "this")
 
 #### 2. UI Tool
-##### - Get and install at: [https://redisdesktop.com/](https://redisdesktop.com/)
+##### - Get and install at: [https://redisdesktop.com/](https://redisdesktop.com/) or [Download here](https://github.com/uglide/RedisDesktopManager/releases/tag/0.8.8)
 ##### - Default connection:
 1. Host: locahost
 1. Port: 6379
