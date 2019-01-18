@@ -261,6 +261,32 @@ namespace RedisCaching.Core
             }
         }
 
+        /// <summary>
+        /// If key already exists and is a string, this command appends the value at the
+        //  end of the string. If key does not exist it is created and set as an empty string,
+        //  so APPEND will be similar to SET in this special case.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="data"></param>
+        /// <param name="dbid"></param>
+        public static void StringAppend(string key, byte[] data, int dbid = -1)
+        {
+            try
+            {
+                if (dbid == -1) dbid = DbId;
+
+                var redisClient = RedisStackExchangeClient.Current.GetConnection;
+                lock (LogSetConnection)
+                {
+                    redisClient.GetDatabase(dbid).StringAppend(key, data);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new RedisException();
+            }
+        }
+
         public static void StringSet(string key, string value, int dbid = -1)
         {
             try

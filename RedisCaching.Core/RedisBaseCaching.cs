@@ -15,17 +15,17 @@ namespace RedisCaching.Core
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="paramObj"></param>
-        /// <param name="CacheKey"></param>
-        /// <param name="InvokeMethod"></param>
+        /// <param name="cacheKey"></param>
+        /// <param name="invokeMethod"></param>
         /// <param name="timeout">Expire in second(s)</param>
         /// <returns></returns>
-        public T GetDataWithCaching<T, T2>(T2 paramObj, string CacheKey, Func<T2, T> InvokeMethod, long timeout = -1) where T : new()
+        public T GetDataWithCaching<T, T2>(T2 paramObj, string cacheKey, Func<T2, T> invokeMethod, long timeout = -1) where T : new()
         {
             T ret = default(T);
             try
             {
                 if (timeout == -1) timeout = RedisClient.ExpiresTime;
-                string key = _cacheNamePrefix + CacheKey;
+                string key = _cacheNamePrefix + cacheKey;
                 byte[] byteData = RedisClient.StringGet(key);
                 if (byteData != null)
                 {
@@ -33,7 +33,7 @@ namespace RedisCaching.Core
                 }
                 else
                 {
-                    ret = InvokeMethod(paramObj);
+                    ret = invokeMethod(paramObj);
                     if (ret != null)
                     {
                         byteData = RedisClient.ProtoBufSerialize(ret);
@@ -43,7 +43,7 @@ namespace RedisCaching.Core
             }
             catch (RedisException rex)
             {
-                ret = InvokeMethod(paramObj);
+                ret = invokeMethod(paramObj);
             }
             catch (Exception ex)
             {
@@ -58,23 +58,23 @@ namespace RedisCaching.Core
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="paramObj"></param>
-        /// <param name="CacheKey"></param>
-        /// <param name="InvokeMethod"></param>
+        /// <param name="cacheKey"></param>
+        /// <param name="invokeMethod"></param>
         /// <param name="timeout">Expire in second(s)</param>
         /// <returns></returns>
-        public long GetLongWithCaching<T>(T paramObj, string CacheKey, Func<T, long> InvokeMethod, long timeout = -1)
+        public long GetLongWithCaching<T>(T paramObj, string cacheKey, Func<T, long> invokeMethod, long timeout = -1)
         {
             long value = 0;
 
             try
             {
                 if (timeout == -1) timeout = RedisClient.ExpiresTime;
-                string key = _cacheNamePrefix + CacheKey;
+                string key = _cacheNamePrefix + cacheKey;
                 value = RedisClient.LongGet(key);
 
                 if (value == 0)
                 {
-                    value = InvokeMethod(paramObj);
+                    value = invokeMethod(paramObj);
 
                     if (value != 0)
                     {
@@ -84,7 +84,7 @@ namespace RedisCaching.Core
             }
             catch (RedisException rex)
             {
-                value = InvokeMethod(paramObj);
+                value = invokeMethod(paramObj);
             }
             catch (Exception ex)
             { }
@@ -96,17 +96,17 @@ namespace RedisCaching.Core
         /// Get data from cache server by cache name
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="CacheKey"></param>
-        /// <param name="InvokeMethod"></param>
+        /// <param name="cacheKey"></param>
+        /// <param name="invokeMethod"></param>
         /// <param name="timeout"></param>
         /// <returns></returns>
-        public T GetDataWithCaching<T>(string CacheKey, Func<T> InvokeMethod, long timeout = -1) where T : new()
+        public T GetDataWithCaching<T>(string cacheKey, Func<T> invokeMethod, long timeout = -1) where T : new()
         {
             T ret = default(T);
             try
             {
                 if (timeout == -1) timeout = RedisClient.ExpiresTime;
-                string key = _cacheNamePrefix + CacheKey;
+                string key = _cacheNamePrefix + cacheKey;
                 byte[] byteData = RedisClient.StringGet(key);
                 if (byteData != null)
                 {
@@ -114,7 +114,7 @@ namespace RedisCaching.Core
                 }
                 else
                 {
-                    ret = InvokeMethod();
+                    ret = invokeMethod();
                     if (ret != null)
                     {
                         byteData = RedisClient.ProtoBufSerialize(ret);
@@ -124,7 +124,7 @@ namespace RedisCaching.Core
             }
             catch (RedisException rex)
             {
-                ret = InvokeMethod();
+                ret = invokeMethod();
             }
             catch (Exception ex) { }
 
@@ -135,14 +135,14 @@ namespace RedisCaching.Core
         /// Get data from cache server by cache name
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="CacheKey"></param>
+        /// <param name="cacheKey"></param>
         /// <returns></returns>
-        public T GetCachingData<T>(string CacheKey) where T : new()
+        public T GetCachingData<T>(string cacheKey) where T : new()
         {
             T ret = default(T);
             try
             {
-                string key = _cacheNamePrefix + CacheKey;
+                string key = _cacheNamePrefix + cacheKey;
                 byte[] byteData = RedisClient.StringGet(key);
 
                 if (byteData != null)
@@ -159,15 +159,15 @@ namespace RedisCaching.Core
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="CacheKey"></param>
+        /// <param name="cacheKey"></param>
         /// <returns></returns>
-        public string GetCachingString(string CacheKey)
+        public string GetCachingString(string cacheKey)
         {
             string ret = null;
 
             try
             {
-                string key = _cacheNamePrefix + CacheKey;
+                string key = _cacheNamePrefix + cacheKey;
                 byte[] byteData = RedisClient.StringGet(key);
 
                 if (byteData != null)
@@ -185,16 +185,30 @@ namespace RedisCaching.Core
         /// Get data from cache server by cache name
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="CacheKey"></param>
+        /// <param name="cacheKey"></param>
         /// <returns></returns>
-        public void SetDataToCache<T>(string CacheKey, T data, long timeout = -1) where T : new()
+        public void SetDataToCache<T>(string cacheKey, T data, long timeout = -1) where T : new()
         {
             try
             {
                 if (timeout == -1) timeout = RedisClient.ExpiresTime;
-                string key = _cacheNamePrefix + CacheKey;
+                string key = _cacheNamePrefix + cacheKey;
                 byte[] byteData = RedisClient.ProtoBufSerialize(data);
                 RedisClient.StringSet(key, byteData, timeout);
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        public void AppendDataToCache<T>(string cacheKey, T data) where T : new()
+        {
+            try
+            {
+                string key      = _cacheNamePrefix + cacheKey;
+                byte[] byteData = RedisClient.ProtoBufSerialize(data);
+                RedisClient.StringAppend(key, byteData);
             }
             catch (Exception ex)
             {
@@ -205,15 +219,15 @@ namespace RedisCaching.Core
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="CacheKey"></param>
+        /// <param name="cacheKey"></param>
         /// <param name="data"></param>
         /// <param name="timeout"></param>
-        public void SetStringToCache(string CacheKey, string data, long timeout = -1)
+        public void SetStringToCache(string cacheKey, string data, long timeout = -1)
         {
             try
             {
                 if (timeout == -1) timeout = RedisClient.ExpiresTime;
-                string key = _cacheNamePrefix + CacheKey;
+                string key = _cacheNamePrefix + cacheKey;
                 byte[] byteData = RedisClient.ProtoBufSerialize(data);
                 RedisClient.StringSet(key, byteData, timeout);
             }
@@ -224,13 +238,13 @@ namespace RedisCaching.Core
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="CacheKey"></param>
+        /// <param name="cacheKey"></param>
         /// <param name="data"></param>
-        public void SetLongToCache(string CacheKey, long data)
+        public void SetLongToCache(string cacheKey, long data)
         {
             try
             {
-                string key = _cacheNamePrefix + CacheKey;
+                string key = _cacheNamePrefix + cacheKey;
                 RedisClient.StringSet(key, data);
             }
             catch (Exception ex)
@@ -240,14 +254,14 @@ namespace RedisCaching.Core
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="CacheKey"></param>
+        /// <param name="cacheKey"></param>
         /// <param name="data"></param>
         /// <param name="timeout"></param>
-        public void SetStringIncrement(string CacheKey, int IncValues)
+        public void SetStringIncrement(string cacheKey, int IncValues)
         {
             try
             {
-                string key = _cacheNamePrefix + CacheKey;
+                string key = _cacheNamePrefix + cacheKey;
                 RedisClient.StringIncrement(key, IncValues);
             }
             catch (Exception ex)
@@ -258,11 +272,11 @@ namespace RedisCaching.Core
         /// Generate cache key by list param that used to get data from store proc
         /// </summary>
         /// <param name="paramObj"></param>
-        /// <param name="CacheKey"></param>
+        /// <param name="cacheKey"></param>
         /// <returns></returns>
-        protected string GenerateCachingKey(object[] paramObj, string CacheKey)
+        protected string GenerateCachingKey(object[] paramObj, string cacheKey)
         {
-            string key = CacheKey;
+            string key = cacheKey;
             foreach (var item in paramObj)
             {
                 key += "_" + item.ToString();
