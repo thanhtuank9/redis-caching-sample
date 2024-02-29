@@ -1,7 +1,7 @@
 # Redis cache Install on Window server
 
 #### 1. Download and Install Redis on window server
-##### - Link: https://github.com/ServiceStack/redis-windows/raw/master/downloads/redis-latest.zip
+##### - Link: https://github.com/ServiceStack/redis-windows/raw/master/downloads/redis-latest.zip or https://github.com/tporadowski/redis/releases
 ##### - Extract to: C:\redis-latest (Recommened)
 ##### - Go into that folder and run command line: "*redis-server --service-install redis.windows.conf --loglevel verbose*"
 ##### - Continue to start service: "*redis-server --service-start*"
